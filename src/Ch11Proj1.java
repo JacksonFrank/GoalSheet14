@@ -13,10 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class Ch11Proj1 implements Callback{
 	
 	Map<String, Set<String>> map = new HashMap<String, Set<String>>();
-	int threads;
-	double inc;
-	double per = 0f;
-	int printInc = 0, initPrintInc;
+	int threads, threadsCompleted = 0;
+	int initPrintInc;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		Ch11Proj1 Ch1 = new Ch11Proj1();
@@ -34,6 +32,7 @@ public class Ch11Proj1 implements Callback{
 		s2 = console.nextLine();
 		System.out.println();
 		console.close();
+		
 		
 		long startTime = System.currentTimeMillis();
 		
@@ -59,8 +58,7 @@ public class Ch11Proj1 implements Callback{
 			set.add(input.nextLine());
 		}
 		threads = set.size();
-		inc = 100f / threads;
-		initPrintInc = (threads / 10000) - 1;
+		initPrintInc = threads / 100;
 		
 		ExecutorService es = Executors.newCachedThreadPool();
 		for(String s : set) {
@@ -79,11 +77,11 @@ public class Ch11Proj1 implements Callback{
 	@Override
 	public void getSets(Set<String> stringSet, String target) throws FileNotFoundException {
 		map.put(target, stringSet);
-		per += inc;
-		printInc ++;
-		if(printInc >= initPrintInc) {
-			System.out.printf("Percent Loaded: %.2f\n", per);
-			printInc = 0;
+		threadsCompleted ++;
+		if(threadsCompleted % initPrintInc == 0) {
+			System.out.printf("Percent Loaded: %.2f\n", ((double)threadsCompleted / (double)threads));
+			System.out.println("Threads: " + threadsCompleted + " out of " + threads);
+			System.out.println();
 		}
 	}
 	
