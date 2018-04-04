@@ -15,14 +15,88 @@ public class Ch11Proj1 implements Callback{
 	Map<String, Set<String>> map = new HashMap<String, Set<String>>();
 	int threads, threadsCompleted = 0;
 	int initPrintInc;
+	//Set<String> fileSet;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-		Ch11Proj1 Ch1 = new Ch11Proj1();
-		Ch1.Start();
+		Set<String> fileSet = new HashSet<String>();
+		Map<String, Set<String>> distanceMap = new HashMap<String, Set<String>>();
+		
+		String file = "dictionary.txt";
+		Scanner dictionary = new Scanner(new File("src/" + file));
+		
+		Scanner console = new Scanner(System.in);
+		System.out.println("Words must be same length");
+		System.out.println("First word: ");
+		System.out.print(">");
+		String word1 = console.next();
+		System.out.println("Second word: ");
+		System.out.print(">");
+		String word2 = console.next();
+		
+		while(dictionary.hasNext()) {
+			String str = dictionary.next();
+			if(str.length() == word1.length()) {
+				fileSet.add(str);
+			}
+			
+		}
+		
+		
+		
+		//Ch11Proj1 Ch1 = new Ch11Proj1();
+		//Ch1.Start();
 	}
+	
+	
+	public static Map<String, Set<String>> getMap(Set<String> set){
+		for(String str : set) {
+			for(int i = 0; i < str.length(); i++) {
+				for(char c = 'a'; c <= 'z'; c++) {
+					
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public void Start() throws FileNotFoundException, InterruptedException {
 		String file = "dictionary.txt";
+		fileSet = new HashSet<String>();
 		
 		String s1, s2;
 		Scanner console = new Scanner(System.in);
@@ -53,15 +127,15 @@ public class Ch11Proj1 implements Callback{
 	
 	public void findEditDistance(String file) throws FileNotFoundException, InterruptedException {
 		Scanner input = new Scanner(new File("src/" + file));
-		Set<String> set = new HashSet<String>();
+		//Set<String> set = new HashSet<String>();
 		while(input.hasNextLine()) {
-			set.add(input.nextLine());
+			fileSet.add(input.nextLine());
 		}
-		threads = set.size();
+		threads = fileSet.size();
 		initPrintInc = threads / 1000;
 		
 	
-		for(String s : set) {
+		for(String s : fileSet) {
 			Calculate calc = new Calculate(s, set, this);
 			calc.start();
 			
@@ -86,7 +160,7 @@ public class Ch11Proj1 implements Callback{
 	
 	public void printToFile() throws FileNotFoundException {
 		PrintStream p = new PrintStream(new File("src/MapFile"));
-		for(String s : map.keySet()) {
+		for(String s : fileSet) {
 			p.print(s + " ");
 			for(String set : map.get(s)) {
 				p.print(set + " ");
