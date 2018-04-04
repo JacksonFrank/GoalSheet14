@@ -58,19 +58,15 @@ public class Ch11Proj1 implements Callback{
 			set.add(input.nextLine());
 		}
 		threads = set.size();
-		initPrintInc = threads / 100;
+		initPrintInc = threads / 1000;
 		
-		ExecutorService es = Executors.newCachedThreadPool();
+	
 		for(String s : set) {
 			Calculate calc = new Calculate(s, set, this);
 			calc.start();
-			es.execute(calc);
+			
 		}
-		es.shutdown();
-		boolean finished = es.awaitTermination(60, TimeUnit.MINUTES);
-			
-			
-		printToFile();
+		
 		
 	}
 
@@ -79,9 +75,12 @@ public class Ch11Proj1 implements Callback{
 		map.put(target, stringSet);
 		threadsCompleted ++;
 		if(threadsCompleted % initPrintInc == 0) {
-			System.out.printf("Percent Loaded: %.2f\n", ((double)threadsCompleted / (double)threads));
+			System.out.printf("Percent Loaded: %.1f\n", ((double)threadsCompleted / (double)threads) * 100f);
 			System.out.println("Threads: " + threadsCompleted + " out of " + threads);
 			System.out.println();
+		}
+		if(threadsCompleted >= threads) {
+			printToFile();
 		}
 	}
 	
