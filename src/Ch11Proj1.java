@@ -6,11 +6,8 @@
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-public class Ch11Proj1 implements Callback{
+import java.util.concurrent.*;
+public class Ch11Proj1{
 	
 	Map<String, Set<String>> map = new HashMap<String, Set<String>>();
 	int threads, threadsCompleted = 0;
@@ -32,30 +29,79 @@ public class Ch11Proj1 implements Callback{
 		System.out.println("Second word: ");
 		System.out.print(">");
 		String word2 = console.next();
+		console.close();
 		
-		while(dictionary.hasNext()) {
-			String str = dictionary.next();
-			if(str.length() == word1.length()) {
-				fileSet.add(str);
-			}
+		if(word1.length() == word2.length()) {
+			System.out.printf("\nLoading...\n");
 			
+			while(dictionary.hasNext()) {
+				String str = dictionary.next();
+				if(str.length() == word1.length()) {
+					fileSet.add(str);
+				}
+			}
+			dictionary.close();
+			
+			distanceMap = getMap(fileSet);
+			System.out.println("Map loaded...");
+			System.out.println("Edit distance: " + findEditDistance(word1, word2, distanceMap));
 		}
-		
-		
+		else {
+			System.out.println("Error: Words aren't same length.");
+		}
 		
 		//Ch11Proj1 Ch1 = new Ch11Proj1();
 		//Ch1.Start();
 	}
 	
 	
+	
 	public static Map<String, Set<String>> getMap(Set<String> set){
+		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+		
 		for(String str : set) {
+			Set<String> editSet = new HashSet<String>();
 			for(int i = 0; i < str.length(); i++) {
 				for(char c = 'a'; c <= 'z'; c++) {
-					
+					String s = "";
+					for(int g = 0; g < str.length(); g++) {
+						if(g != i) {
+							s += str.charAt(g);
+						}
+						else {
+							s += c;
+						}
+					}
+					if(set.contains(s)) {
+						editSet.add(s);
+					}
 				}
 			}
+			map.put(str, editSet);
 		}
+		
+		return map;
+	}
+	
+	public static int findEditDistance(String word, String target, Map<String, Set<String>> map) {
+		LinkedList<String> thisList = new LinkedList<String>();
+		thisList.add(word);
+		for(int i = 0; i <= 100; i++) {
+			for(String s : thisList) {
+				if(s.equals(target)) {
+					return i;
+				}
+			}
+			LinkedList<String> newList = new LinkedList<String>();
+			for(String s : thisList) {
+				newList.addAll(map.get(s));
+			}
+			thisList.clear();
+			thisList.addAll(newList);
+			
+		}
+		return -1;
+		
 	}
 	
 	
@@ -92,8 +138,7 @@ public class Ch11Proj1 implements Callback{
 	
 	
 	
-	
-	
+	/*
 	public void Start() throws FileNotFoundException, InterruptedException {
 		String file = "dictionary.txt";
 		fileSet = new HashSet<String>();
@@ -168,6 +213,7 @@ public class Ch11Proj1 implements Callback{
 			p.println();
 		}
 	}
+	*/
 	
 	
 	
